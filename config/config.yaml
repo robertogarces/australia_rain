@@ -1,0 +1,33 @@
+# config.yaml
+
+# Rutas de los archivos
+raw_data_path: '../data/raw'
+raw_train_data_path:  '../data/raw/train_weatherAUS.csv'
+processed_data_path: '../data/processed'
+features_path: '../config/process/features.yaml'
+artifacts_path: '../artifacts'
+models_path: '../models'
+
+# Características que serán mapeadas de binario (ej. 'Yes'/'No' a 1/0)
+features_to_map:
+  - 'RainToday'
+  - 'RainTomorrow'
+
+# Características a eliminar
+features_to_drop:
+  - 'Date'
+
+features_with_outliers:
+  - 'Rainfall'
+  - 'Evaporation'
+  - 'WindGustSpeed'
+  - 'WindSpeed9am'
+  - 'WindSpeed3pm'
+
+# Características con valores atípicos que se deben filtrar
+features_with_outliers:
+  - 'Temperature'
+  - 'Humidity'
+
+# Nombre de la variable objetivo
+target: 'RainTomorrow'
