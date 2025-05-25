@@ -64,16 +64,16 @@ def main():
     X = df.drop(target, axis=1)
     y = df[target]
 
-    logger.info(f"Splitting data into train and test sets (test_size=0.2, shuffle=False)...")
+    logger.info(f"Splitting data into train and test sets (test_size={training_parameters['test_size']}, shuffle=False)...")
     X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=42, shuffle=False
+        X, y, test_size=training_parameters['test_size'], random_state=42, shuffle=False
     )
     logger.info(f"Train shape: {X_train.shape}, Test shape: {X_test.shape}")
 
     try:
         if use_optuna:
             logger.info("Starting hyperparameter tuning with Optuna...")
-            best_params = tune_hyperparameters(X_train, y_train, n_trials=5)
+            best_params = tune_hyperparameters(X_train, y_train, n_trials=training_parameters['n_trials'])
             with open(best_params_path, "w") as f:
                 yaml.dump(best_params, f)
             logger.info(f"Hyperparameter tuning finished. Best params saved to {best_params_path}")
@@ -119,7 +119,7 @@ def main():
 
         logger.info("Evaluating the model...")
         y_pred_proba = model.predict_proba(X_test)[:, 1]
-        y_pred = (y_pred_proba >= 0.5).astype(int)
+        y_pred = (y_pred_proba >= training_parameters['pred_threshold']).astype(int)
 
         metrics = {
             "accuracy": accuracy_score(y_test, y_pred),
