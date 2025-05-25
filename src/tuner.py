@@ -5,6 +5,11 @@ from sklearn.metrics import roc_auc_score
 from lightgbm import LGBMClassifier
 from sklearn.model_selection import StratifiedKFold
 
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()]
+)
 logger = logging.getLogger(__name__)
 
 def tune_hyperparameters(X, y, n_trials=50, random_state=42):
@@ -36,7 +41,7 @@ def tune_hyperparameters(X, y, n_trials=50, random_state=42):
             X_train, X_valid = X.iloc[train_idx], X.iloc[valid_idx]
             y_train, y_valid = y.iloc[train_idx], y.iloc[valid_idx]
 
-            model = LGBMClassifier(**params, early_stopping_rounds=50)
+            model = LGBMClassifier(**params, early_stopping_rounds=50, verbosity=-1)
             model.fit(
                 X_train, y_train,
                 eval_set=[(X_valid, y_valid)],
@@ -54,5 +59,5 @@ def tune_hyperparameters(X, y, n_trials=50, random_state=42):
 
     logger.info(f"Best trial AUC: {study.best_value:.4f}")
 
-    return study.best_params, study.best_value
+    return study.best_params
 
