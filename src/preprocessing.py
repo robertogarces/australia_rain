@@ -1,8 +1,8 @@
 import pandas as pd
 import json
-import sys
+#import sys
 import pickle
-sys.path.append('../')
+#sys.path.append('../')
 
 from config.paths import RAW_DATA_PATH, PROCESSED_DATA_PATH, CONFIG_PATH, ARTIFACTS_PATH
 
