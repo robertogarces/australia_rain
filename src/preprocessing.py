@@ -41,10 +41,13 @@ def run_preprocessing_pipeline() -> None:
 
     # === Load raw data and configuration files ===
     df = load_data(RAW_DATA_PATH / "training_data.csv")
-    config, features = load_configs(
-        CONFIG_PATH / "settings.yaml", 
-        CONFIG_PATH / "features.yaml"
-    )
+    configs = load_configs(
+            CONFIG_PATH / "settings.yaml",
+            CONFIG_PATH / "features.yaml"
+        )
+    
+    config = configs["settings"]
+    features = configs["features"]
 
     # === Extract relevant parameters and feature groups ===
     pp_params = config["preprocessing_parameters"]

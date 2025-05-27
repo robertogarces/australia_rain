@@ -22,7 +22,7 @@ from trainer import train_model
 
 sys.path.append('../')
 from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, MODELS_PATH, ARTIFACTS_PATH, PLOTS_PATH
-from utils.file_management import load_config
+from utils.file_management import load_configs, load_data, save_pickle, load_pickle
 
 # Setup logging con formato detallado y nivel INFO
 logging.basicConfig(
@@ -35,31 +35,27 @@ logger = logging.getLogger(__name__)
 def main():
     logger.info("======== Starting training pipeline ========")
 
-    try:
-        # Load config
-        logger.info("Loading configuration files...")
-        features = load_config(CONFIG_PATH / "features.yaml")
-        settings = load_config(CONFIG_PATH / "settings.yaml")
-        training_parameters = settings["training_parameters"]
-        use_optuna = training_parameters["use_optuna"]
-        target = features["target"]
-        logger.info(f"Target variable: '{target}'")
-    except Exception as e:
-        logger.error(f"Failed loading config: {e}")
-        raise
+    configs = load_configs(
+        CONFIG_PATH / "settings.yaml",
+        CONFIG_PATH / "features.yaml"
+        )
+
+    settings = configs["settings"]
+    features = configs["features"]
+
+    training_parameters = settings["training_parameters"]
+    use_optuna = training_parameters["use_optuna"]
+    target = features["target"]
+
+    logger.info(f"Target variable: '{target}'")
 
     best_params_path = ARTIFACTS_PATH / "best_params.yaml"
     dataset_path = PROCESSED_DATA_PATH / "data.csv"
 
-    try:
-        logger.info(f"Loading dataset from {dataset_path} ...")
-        df = pd.read_csv(dataset_path)
-        df.sort_values(by="Date", ascending=True, inplace=True)
-        df.drop(["Date"], axis=1, inplace=True)
-        logger.info(f"Dataset loaded with shape {df.shape}")
-    except Exception as e:
-        logger.error(f"Failed loading dataset: {e}")
-        raise
+    df = load_data(dataset_path)
+    df.sort_values(by="Date", ascending=True, inplace=True)
+    df.drop(["Date"], axis=1, inplace=True)
+    logger.info(f"Dataset loaded with shape {df.shape}")
 
     X = df.drop(target, axis=1)
     y = df[target]
@@ -74,13 +70,11 @@ def main():
         if use_optuna:
             logger.info("Starting hyperparameter tuning with Optuna...")
             best_params = tune_hyperparameters(X_train, y_train, n_trials=training_parameters['n_trials'])
-            with open(best_params_path, "w") as f:
-                yaml.dump(best_params, f)
+            save_pickle(best_params, best_params_path, 'Optuna best hyper parameters')
             logger.info(f"Hyperparameter tuning finished. Best params saved to {best_params_path}")
         else:
             logger.info("Loading best hyperparameters from file...")
-            with open(best_params_path, "r") as f:
-                best_params = yaml.safe_load(f)
+            best_params = load_pickle(best_params_path, 'Optuna best hyper parameters')
             logger.info(f"Best params loaded from {best_params_path}")
     except FileNotFoundError:
         logger.warning("No best parameters file found. Using default parameters.")
