@@ -1,9 +1,6 @@
 import logging
 import sys
-import pandas as pd
 import mlflow
-import joblib
-import yaml
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
@@ -17,6 +14,7 @@ from sklearn.metrics import (
     RocCurveDisplay
 )
 from mlflow.models import infer_signature
+
 from tuner import tune_hyperparameters
 from trainer import train_model
 
