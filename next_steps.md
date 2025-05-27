@@ -1,7 +1,5 @@
 # Next steps
 
-- Desarrollar notebook de inferencia
-- Desarrollar script de inferencia
 - Crear repositorio de Git
 - Crear repositorio de DVC
 - Escribir dvc repro

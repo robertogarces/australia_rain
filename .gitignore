@@ -29,10 +29,11 @@ mlruns/
 data/**/*.csv
 data/**/*.txt
 data/**/*.parquet
-models/**/*.pkl
-models/**/*.joblib
 artifacts/**/*.pkl
-artifacts/**/*.json
+artifacts/**/*.joblib
+artifacts/**/*.png
+
+
 
 # Do NOT ignore the directories themselves, so Git can traverse into them
 !data/

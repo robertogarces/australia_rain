@@ -1,6 +1,14 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+    handlers=[logging.StreamHandler()]
+)
+logger = logging.getLogger(__name__)
 
 def binary_mapper(df, columns, mapping={'No': 0, 'Yes': 1}):
     """
@@ -137,16 +145,6 @@ def impute_median_by_group(df, features, group_cols=['Month', 'Location']):
 
     return df_imputed, group_medians
 
-
-
-def impute_with_minus_one(df, columns):
-    df = df.copy()
-
-    for col in columns:
-        df[col] = df[col].fillna(-1)
-    return df
-
-
 def assign_season(month):
     if month in [12, 1, 2]:
         return 'Summer'
@@ -187,3 +185,98 @@ def fill_missing_categories(df, columns, fill_value='Missing'):
         if col in df.columns:
             df[col] = df[col].fillna(fill_value)
     return df
+
+
+def drop_null_target(df: pd.DataFrame, target_col: str) -> pd.DataFrame:
+    logger.info(f"Dropping rows with null values in target '{target_col}'")
+    before = df.shape[0]
+    df = df.dropna(subset=[target_col])
+    after = df.shape[0]
+    logger.info(f"Dropped {before - after} rows with null target values. New shape: {df.shape}")
+    return df
+
+
+def process_dates(df: pd.DataFrame, date='Date') -> pd.DataFrame:
+    logger.info("Converting 'Date' to datetime and extracting 'Month'")
+    df[date] = pd.to_datetime(df[date], errors='coerce')
+    if df[date].isnull().any():
+        n_invalid = df[date].isnull().sum()
+        logger.warning(f"Found {n_invalid} invalid 'Date' entries; dropping them.")
+        df = df.dropna(subset=[date])
+    df['Month'] = df[date].dt.month
+    return df
+
+
+def map_wind_direction(df: pd.DataFrame, wind_mapping: dict) -> pd.DataFrame:
+    logger.info("Mapping wind direction categorical features to degrees")
+    wind_cols = ['WindGustDir', 'WindDir9am', 'WindDir3pm']
+    for col in wind_cols:
+        if col in df.columns:
+            mapped_col = f"{col}_deg"
+            df[mapped_col] = df[col].map(wind_mapping)
+            missing_count = df[mapped_col].isnull().sum()
+            if missing_count > 0:
+                logger.warning(f"{missing_count} missing mappings in '{col}', assigned NaN in '{mapped_col}'")
+        else:
+            logger.warning(f"Expected column '{col}' not found in dataframe")
+    return df
+
+
+def apply_label_encoders(df, encoders, fallback_value=-1):
+    """
+    Aplica múltiples LabelEncoders a un DataFrame, manejando categorías desconocidas.
+
+    Parámetros:
+        df (pd.DataFrame): DataFrame de entrada.
+        encoders (dict): Diccionario {columna: LabelEncoder}.
+        fallback_value (int): Valor para categorías no vistas.
+
+    Retorna:
+        pd.DataFrame: DataFrame con columnas codificadas.
+    """
+    df_encoded = df.copy()
+    for col, encoder in encoders.items():
+        if col not in df_encoded.columns:
+            continue
+
+        known_classes = set(encoder.classes_)
+
+        def encode_value(val):
+            if pd.isna(val) or val not in known_classes:
+                return fallback_value
+            return encoder.transform([val])[0]
+
+        df_encoded[col] = df_encoded[col].apply(encode_value)
+
+    return df_encoded
+
+
+def apply_group_median_imputation(df, group_medians, features, group_cols=['Month', 'Location'], fallback=-1):
+    """
+    Impute missing values in specified columns using precomputed group-level medians.
+
+    Parameters:
+        df (pd.DataFrame): DataFrame with missing values.
+        group_medians (dict): Dict con medians per group in format {'Month|Location': {feature: value}}.
+        features (list): Features to impute.
+        group_cols (list): Group by features (default=['Month', 'Location']).
+        fallback (float): Value to use if there's not group median.
+
+    Returns:
+        pd.DataFrame: DataFrame con los valores imputados.
+    """
+    df_imputed = df.copy()
+    valid_features = [f for f in features if f in df.columns]
+
+    if not valid_features:
+        return df_imputed
+
+    for idx, row in df.iterrows():
+        key = '|'.join(map(str, [row[col] for col in group_cols]))
+        for feature in valid_features:
+            if pd.isna(row[feature]):
+                value = group_medians.get(key, {}).get(feature, fallback)
+                df_imputed.at[idx, feature] = value
+
+    return df_imputed
+

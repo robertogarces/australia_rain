@@ -5,7 +5,7 @@ preprocessing_parameters:
 
 training_parameters:
   use_optuna: True
-  n_trials: 50
+  n_trials: 5
   test_size: 0.2
   pred_threshold: 0.5
 
