@@ -29,9 +29,10 @@ mlruns/
 data/**/*.csv
 data/**/*.txt
 data/**/*.parquet
-artifacts/models/*.pkl
-artifacts/models/*.joblib
-artifacts/**/*.png
+artifacts/models/*
+!artifacts/models/.gitkeep
+artifacts/plots/*
+!artifacts/plots/.gitkeep
 artifacts/**/*.pkl
 
 
