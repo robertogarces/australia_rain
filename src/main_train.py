@@ -22,7 +22,7 @@ from trainer import train_model
 
 sys.path.append('../')
 from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, MODELS_PATH, ARTIFACTS_PATH, PLOTS_PATH
-from utils.config_loader import load_config
+from utils.file_management import load_config
 
 # Setup logging con formato detallado y nivel INFO
 logging.basicConfig(

@@ -5,7 +5,7 @@ import os
 sys.path.append('../')
 
 from config.paths import RAW_DATA_PATH, CONFIG_PATH
-from utils.config_loader import load_config
+from utils.file_management import load_config
 
 # Setup logging con formato profesional
 logging.basicConfig(
