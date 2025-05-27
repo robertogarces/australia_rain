@@ -26,9 +26,12 @@ mlruns/
 
 # Ignore data, models, and artifacts directories since they are tracked by DVC
 # Ignore normal data files inside data/, models/, artifacts/
-data/**/*.csv
-data/**/*.txt
-data/**/*.parquet
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/final/*
+!data/final/.gitkeep
 artifacts/models/*
 !artifacts/models/.gitkeep
 artifacts/plots/*
