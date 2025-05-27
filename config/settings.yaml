@@ -1,0 +1,33 @@
+preprocessing_parameters:
+  outliers_percentile: 0.99
+  correlation_threshold: 0.9
+  correlation_strategy: 'target_corr'  # 'target_corr' or 'nulls'
+
+training_parameters:
+  use_optuna: True
+  n_trials: 50
+  test_size: 0.2
+  pred_threshold: 0.5
+
+inference_sample:
+  sample_size: 1000
+  random_state: 42
+  
+wind_mapping:
+  N: 0
+  NNE: 22.5
+  NE: 45
+  ENE: 67.5
+  E: 90
+  ESE: 112.5
+  SE: 135
+  SSE: 157.5
+  S: 180
+  SSW: 202.5
+  SW: 225
+  WSW: 247.5
+  W: 270
+  WNW: 292.5
+  NW: 315
+  NNW: 337.5
+  Missing: -1

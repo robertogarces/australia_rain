@@ -1,0 +1,78 @@
+target: RainTomorrow
+
+features_to_map:
+  - RainTomorrow
+  - RainToday
+
+numeric_features:
+  - MinTemp
+  - MaxTemp
+  - Rainfall
+  - Evaporation
+  - Sunshine
+  - WindGustSpeed
+  - WindSpeed9am
+  - WindSpeed3pm
+  - Humidity9am
+  - Humidity3pm
+  - Pressure9am
+  - Pressure3pm
+  - Cloud9am
+  - Cloud3pm
+  - Temp9am
+  - Temp3pm
+  - RainToday
+  - RainTomorrow
+  - Month
+
+categorical_features:
+  - Location
+  - WindGustDir
+  - WindDir9am
+  - WindDir3pm
+  - Season
+
+features_with_outliers:
+- Rainfall
+- Evaporation
+- WindGustSpeed
+- WindSpeed9am
+- WindSpeed3pm
+
+location_nulls:
+- Sunshine
+- Evaporation
+- Cloud3pm
+- Cloud9am
+- Pressure9am
+- WindGustSpeed
+
+features_to_drop: 
+- Date
+- WindGustDir
+
+model_features:
+- Location
+- MinTemp
+- Rainfall
+- Evaporation
+- Sunshine
+- WindGustDir
+- WindGustSpeed
+- WindDir9am
+- WindDir3pm
+- WindSpeed9am
+- WindSpeed3pm
+- Humidity9am
+- Humidity3pm
+- Pressure9am
+- Cloud9am
+- Cloud3pm
+- Temp3pm
+- RainToday
+- RainTomorrow
+- Month
+- WindGustDir_deg
+- WindDir9am_deg
+- WindDir3pm_deg
+- Season

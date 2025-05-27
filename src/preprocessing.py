@@ -30,7 +30,7 @@ pd.set_option('display.max_columns', None)
 def main():
     logger.info("=== Starting preprocessing pipeline ===")
     try:
-        dataset_path = RAW_DATA_PATH / "weatherAUS.csv"
+        dataset_path = RAW_DATA_PATH / "training_data.csv"
         logger.info(f"Loading raw dataset from {dataset_path}")
         df = pd.read_csv(dataset_path)
         logger.info(f"Raw dataset shape: {df.shape}")
@@ -57,7 +57,6 @@ def main():
     features_to_map = features['features_to_map']
     num_features = features['numeric_features']
     cat_features = features['categorical_features']
-    location_nulls = features['location_nulls']
     features_with_outliers = features['features_with_outliers']
 
     logger.info(f"Target variable: '{target}'")
