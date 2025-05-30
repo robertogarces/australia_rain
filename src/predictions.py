@@ -5,7 +5,7 @@ from sklearn.metrics import classification_report, roc_auc_score
 
 sys.path.append('../')
 
-from config.paths import RAW_DATA_PATH, CONFIG_PATH, ARTIFACTS_PATH, MODELS_PATH
+from config.paths import PROCESSED_DATA_PATH, CONFIG_PATH, ARTIFACTS_PATH, MODELS_PATH
 from utils.file_management import load_configs, load_data, load_json, load_pickle
 from utils.preprocessors import (
     binary_mapper,
@@ -22,7 +22,7 @@ pd.set_option('display.max_columns', None)
 def run_inference_pipeline():
     """Run the full inference pipeline on a sample dataset."""
     print("Loading inference dataset...")
-    df = load_data(RAW_DATA_PATH / "inference_sample.csv")
+    df = load_data(PROCESSED_DATA_PATH / "inference_sample.csv")
 
     print("Loading configuration files...")
     configs = load_configs(CONFIG_PATH / "settings.yaml", CONFIG_PATH / "features.yaml")

@@ -3,7 +3,6 @@ import sys
 sys.path.append('../')
 
 from config.paths import (
-    RAW_DATA_PATH, 
     PROCESSED_DATA_PATH, 
     CONFIG_PATH, 
     ARTIFACTS_PATH
@@ -40,7 +39,7 @@ def run_preprocessing_pipeline() -> None:
     logger.info("=== Starting preprocessing pipeline ===")
 
     # === Load raw data and configuration files ===
-    df = load_data(RAW_DATA_PATH / "training_data.csv")
+    df = load_data(PROCESSED_DATA_PATH / "training_data.csv")
     configs = load_configs(
             CONFIG_PATH / "settings.yaml",
             CONFIG_PATH / "features.yaml"

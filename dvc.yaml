@@ -1,0 +1,12 @@
+stages:
+  create_inference_sample:
+    cmd: python -m src.create_inference_sample
+    deps:
+      - src/create_inference_sample.py
+      - config/paths.py
+      - utils/file_management.py
+      - config/settings.yaml
+      - data/raw/weatherAUS.csv
+    outs:
+      - data/processed/training_data.csv
+      - data/processed/inference_sample.csv

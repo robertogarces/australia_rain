@@ -4,7 +4,7 @@ import sys
 import os
 sys.path.append('../')
 
-from config.paths import RAW_DATA_PATH, CONFIG_PATH
+from config.paths import RAW_DATA_PATH, PROCESSED_DATA_PATH, CONFIG_PATH
 from utils.file_management import load_config
 
 # Setup logging con formato profesional
@@ -49,13 +49,13 @@ def main():
     try:
         # Tomar muestra para inferencia
         inference_df = df.sample(n=sample_size, random_state=random_state)
-        inference_path = RAW_DATA_PATH / "inference_sample.csv"
+        inference_path = PROCESSED_DATA_PATH / "inference_sample.csv"
         inference_df.to_csv(inference_path, index=False)
         logger.info(f"Inference sample saved to {inference_path} with shape {inference_df.shape}")
 
         # Guardar el resto como dataset de entrenamiento
         training_df = df.drop(inference_df.index)
-        training_path = RAW_DATA_PATH / "training_data.csv"
+        training_path = PROCESSED_DATA_PATH / "training_data.csv"
         training_df.to_csv(training_path, index=False)
         logger.info(f"Training sample saved to {training_path} with shape {training_df.shape}")
 
