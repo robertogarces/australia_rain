@@ -22,6 +22,7 @@ def binary_mapper(df, columns, mapping={'No': 0, 'Yes': 1}):
     Returns:
         pd.DataFrame: DataFrame with transformed columns.
     """
+    logger.info(f"Mapping columns {columns}. Map applied: {mapping}")
     df = df.copy()
     for col in columns:
         if col in df.columns:
@@ -42,6 +43,7 @@ def filter_outliers_by_percentile(df, features, percentile=0.99):
     Returns:
         pd.DataFrame: DataFrame without rows exceeding the specified percentile in any of the features.
     """
+
     df_clean = df.copy()
     outlier_indices = set()
     
@@ -53,8 +55,8 @@ def filter_outliers_by_percentile(df, features, percentile=0.99):
     initial_rows = df_clean.shape[0]
     df_clean = df_clean.drop(index=outlier_indices)
     final_rows = df_clean.shape[0]
-    
-    print(f"Rows removed due to upper {100*(1-percentile):.2f}% outliers: {initial_rows - final_rows}")
+    logger.info(f"Removing outliers of features: {features}. Rows removed due to upper {100*(1-percentile):.2f}% outliers: {initial_rows - final_rows}")
+
     return df_clean
 
 
@@ -105,6 +107,7 @@ def remove_highly_correlated_features(df, target, threshold=0.9, strategy='nulls
                 to_drop.add(drop)
 
     reduced_df = df.drop(columns=list(to_drop))
+
     return reduced_df, list(to_drop)
 
 

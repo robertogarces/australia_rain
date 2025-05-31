@@ -30,6 +30,8 @@ stages:
     cmd: python -m src.main_train
     deps:
       - config/paths.py
+      - config/settings.yaml
+      - config/features.yaml
       - utils/file_management.py
       - src/tuner.py
       - src/trainer.py
