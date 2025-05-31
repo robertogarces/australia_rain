@@ -25,7 +25,10 @@ def run_inference_pipeline():
     df = load_data(PROCESSED_DATA_PATH / "inference_sample.csv")
 
     print("Loading configuration files...")
-    configs = load_configs(CONFIG_PATH / "settings.yaml", CONFIG_PATH / "features.yaml")
+    configs = load_configs(
+        CONFIG_PATH / "settings.yaml", 
+        CONFIG_PATH / "features.yaml"
+        )
     config = configs["settings"]
     features = configs["features"]
 

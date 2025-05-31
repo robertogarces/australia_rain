@@ -1,0 +1,6 @@
+{
+  "boosting_type": "gbdt",
+  "objective": "binary",
+  "metric": "auc",
+  "random_state": 42
+}

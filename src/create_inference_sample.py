@@ -45,10 +45,11 @@ def main():
         logger.error(f"Missing config key: {e}")
         raise
 
-    # Tomar muestra
+    # Take a sample
     try:
         # Tomar muestra para inferencia
-        inference_df = df.sample(n=sample_size, random_state=random_state)
+        df["Date"] = pd.to_datetime(df["Date"])
+        inference_df = df.sort_values("Date").tail(sample_size)
         inference_path = PROCESSED_DATA_PATH / "inference_sample.csv"
         inference_df.to_csv(inference_path, index=False)
         logger.info(f"Inference sample saved to {inference_path} with shape {inference_df.shape}")

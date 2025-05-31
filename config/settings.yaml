@@ -4,13 +4,13 @@ preprocessing_parameters:
   correlation_strategy: 'target_corr'  # 'target_corr' or 'nulls'
 
 training_parameters:
-  use_optuna: True
+  use_optuna: False
   n_trials: 100
   test_size: 0.2
   pred_threshold: 0.5
 
 inference_sample:
-  sample_size: 1000
+  sample_size: 3000
   random_state: 42
   
 wind_mapping:

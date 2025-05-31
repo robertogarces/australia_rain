@@ -21,7 +21,7 @@ from src.trainer import train_model
 
 sys.path.append('../')
 from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, MODELS_PATH, ARTIFACTS_PATH, PLOTS_PATH
-from utils.file_management import load_configs, load_data, save_pickle, load_pickle
+from utils.file_management import load_configs, load_data, save_json, load_pickle
 
 # Setup logging con formato detallado y nivel INFO
 logging.basicConfig(
@@ -48,7 +48,7 @@ def main():
 
     logger.info(f"Target variable: '{target}'")
 
-    best_params_path = ARTIFACTS_PATH / "best_params.yaml"
+    best_params_path = ARTIFACTS_PATH / "best_params.json"
     dataset_path = PROCESSED_DATA_PATH / "data.csv"
 
     df = load_data(dataset_path)
@@ -69,7 +69,7 @@ def main():
         try:
             logger.info("Starting hyperparameter tuning with Optuna...")
             best_params = tune_hyperparameters(X_train, y_train, n_trials=training_parameters['n_trials'])
-            save_pickle(best_params, best_params_path, 'Optuna best hyper parameters')
+            save_json(best_params, best_params_path, 'Optuna best hyper parameters')
             logger.info(f"Hyperparameter tuning finished. Best params saved to {best_params_path}")
         except Exception as e:
             logger.error(f"Error during hyperparameter tuning: {e}")
@@ -82,8 +82,10 @@ def main():
             "metric": "auc",
             "random_state": 42
         }
+        save_json(best_params, best_params_path, 'Default hyperparameters')
 
-    # Configurar experimento MLflow
+
+    # MLFlow experiment setup
     mlflow.set_experiment("RainPrediction")
 
     run_name = "LGBM_with_Optuna" if use_optuna else "LGBM_default"

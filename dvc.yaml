@@ -37,7 +37,16 @@ stages:
       - src/trainer.py
       - data/processed/data.csv
     outs:
-      - artifacts/best_params.yaml
+      - artifacts/best_params.json
       - artifacts/models/lgbm.joblib
       - artifacts/plots/confusion_matrix.png
       - artifacts/plots/roc_curve.png
+
+  inference_sample_pipeline:
+    cmd: python -m src.inference_sample_pipeline
+    deps:
+      - config/paths.py
+      - config/settings.yaml
+      - config/features.yaml
+      - data/processed/inference_sample.csv
+      - artifacts/models/lgbm.joblib
