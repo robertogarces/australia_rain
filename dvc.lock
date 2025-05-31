@@ -1,0 +1,118 @@
+schema: '2.0'
+stages:
+  create_inference_sample:
+    cmd: python -m src.create_inference_sample
+    deps:
+    - path: config/paths.py
+      hash: md5
+      md5: a4fa5cf24383393a5a825649ca47f8f0
+      size: 598
+    - path: config/settings.yaml
+      hash: md5
+      md5: 77f3760357a37fd86a3f64e7e3fd2953
+      size: 505
+    - path: data/raw/weatherAUS.csv
+      hash: md5
+      md5: a65cf8b8719b1a65db4f361eeec18457
+      size: 14094055
+    - path: src/create_inference_sample.py
+      hash: md5
+      md5: 195797ac6ef1072ccf00a89b6ed8979d
+      size: 2353
+    - path: utils/file_management.py
+      hash: md5
+      md5: b879c05d8e371e7111fef8130bbd4df9
+      size: 4127
+    outs:
+    - path: data/processed/inference_sample.csv
+      hash: md5
+      md5: ebbca466f98c8f6b0ae3d2b8b73eedbb
+      size: 107585
+    - path: data/processed/training_data.csv
+      hash: md5
+      md5: d651fb02608f41c7f5018dbd8ac0be8e
+      size: 15493651
+  preprocessing:
+    cmd: python -m src.preprocessing
+    deps:
+    - path: config/features.yaml
+      hash: md5
+      md5: e35b46919607032f1641dc6ea8322585
+      size: 1015
+    - path: config/paths.py
+      hash: md5
+      md5: a4fa5cf24383393a5a825649ca47f8f0
+      size: 598
+    - path: config/settings.yaml
+      hash: md5
+      md5: 77f3760357a37fd86a3f64e7e3fd2953
+      size: 505
+    - path: data/processed/training_data.csv
+      hash: md5
+      md5: d651fb02608f41c7f5018dbd8ac0be8e
+      size: 15493651
+    - path: utils/file_management.py
+      hash: md5
+      md5: b879c05d8e371e7111fef8130bbd4df9
+      size: 4127
+    - path: utils/preprocessors.py
+      hash: md5
+      md5: b0c8bd50aebc0c6e97c3334c671f7669
+      size: 9977
+    outs:
+    - path: artifacts/dropped_correlated_features.json
+      hash: md5
+      md5: e63388d784b5ca4ecc3e8bb524bf9aaa
+      size: 45
+    - path: artifacts/imputation_group_medians.json
+      hash: md5
+      md5: b7e2c980c28533495955594321eb9a8d
+      size: 215724
+    - path: artifacts/label_encoders.pkl
+      hash: md5
+      md5: 90d2417486f7b3ff4693b815643178a9
+      size: 1367
+    - path: data/processed/data.csv
+      hash: md5
+      md5: 244f55ba271ff4b35dea1c831cabb982
+      size: 15081941
+  main_train:
+    cmd: python -m src.main_train
+    deps:
+    - path: config/paths.py
+      hash: md5
+      md5: a4fa5cf24383393a5a825649ca47f8f0
+      size: 598
+    - path: data/processed/data.csv
+      hash: md5
+      md5: 244f55ba271ff4b35dea1c831cabb982
+      size: 15081941
+    - path: src/trainer.py
+      hash: md5
+      md5: 6e312998ee3acec45fbb77747a4f661e
+      size: 1172
+    - path: src/tuner.py
+      hash: md5
+      md5: 8355dff981aef179dc9b870cd675ceb9
+      size: 2419
+    - path: utils/file_management.py
+      hash: md5
+      md5: b879c05d8e371e7111fef8130bbd4df9
+      size: 4127
+    outs:
+    - path: artifacts/best_params.yaml
+      hash: md5
+      md5: 0de5e99dc438246675e6fc000ef3cf0d
+      size: 252
+    - path: artifacts/models/lgbm.joblib
+      hash: md5
+      md5: 22a5fd83a96d6e134d4483025f8b0fc9
+      size: 10094788
+    - path: artifacts/plots/confusion_matrix.png
+      hash: md5
+      md5: ebf1e026f3a5fe0b595993e7fd8cfdb4
+      size: 20713
+    - path: artifacts/plots/roc_curve.png
+      hash: md5
+      md5: 53531f20bde064b428e200191fd60063
+      size: 26656

@@ -10,3 +10,32 @@ stages:
     outs:
       - data/processed/training_data.csv
       - data/processed/inference_sample.csv
+
+  preprocessing:
+    cmd: python -m src.preprocessing
+    deps:
+      - config/paths.py
+      - config/settings.yaml
+      - config/features.yaml
+      - utils/file_management.py
+      - utils/preprocessors.py
+      - data/processed/training_data.csv
+    outs:
+      - artifacts/dropped_correlated_features.json
+      - artifacts/imputation_group_medians.json
+      - artifacts/label_encoders.pkl
+      - data/processed/data.csv
+
+  main_train:
+    cmd: python -m src.main_train
+    deps:
+      - config/paths.py
+      - utils/file_management.py
+      - src/tuner.py
+      - src/trainer.py
+      - data/processed/data.csv
+    outs:
+      - artifacts/best_params.yaml
+      - artifacts/models/lgbm.joblib
+      - artifacts/plots/confusion_matrix.png
+      - artifacts/plots/roc_curve.png

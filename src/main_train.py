@@ -1,6 +1,7 @@
 import logging
 import sys
 import mlflow
+import argparse
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import (
@@ -11,12 +12,13 @@ from sklearn.metrics import (
     roc_auc_score,
     log_loss,
     ConfusionMatrixDisplay,
-    RocCurveDisplay
+    RocCurveDisplay,
+    classification_report
 )
 from mlflow.models import infer_signature
 
-from tuner import tune_hyperparameters
-from trainer import train_model
+from src.tuner import tune_hyperparameters
+from src.trainer import train_model
 
 sys.path.append('../')
 from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, MODELS_PATH, ARTIFACTS_PATH, PLOTS_PATH
@@ -64,27 +66,23 @@ def main():
     )
     logger.info(f"Train shape: {X_train.shape}, Test shape: {X_test.shape}")
 
-    try:
-        if use_optuna:
+    if use_optuna:
+        try:
             logger.info("Starting hyperparameter tuning with Optuna...")
             best_params = tune_hyperparameters(X_train, y_train, n_trials=training_parameters['n_trials'])
             save_pickle(best_params, best_params_path, 'Optuna best hyper parameters')
             logger.info(f"Hyperparameter tuning finished. Best params saved to {best_params_path}")
-        else:
-            logger.info("Loading best hyperparameters from file...")
-            best_params = load_pickle(best_params_path, 'Optuna best hyper parameters')
-            logger.info(f"Best params loaded from {best_params_path}")
-    except FileNotFoundError:
-        logger.warning("No best parameters file found. Using default parameters.")
+        except Exception as e:
+            logger.error(f"Error during hyperparameter tuning: {e}")
+            raise
+    else:
+        logger.warning("Optuna not used. Using default parameters.")
         best_params = {
             "boosting_type": "gbdt",
             "objective": "binary",
             "metric": "auc",
             "random_state": 42
         }
-    except Exception as e:
-        logger.error(f"Error reading best parameters: {e}")
-        raise
 
     # Configurar experimento MLflow
     mlflow.set_experiment("RainPrediction")
@@ -125,6 +123,9 @@ def main():
         for name, value in metrics.items():
             mlflow.log_metric(name, value)
             logger.info(f"Metric - {name}: {value:.4f}")
+
+        report_str = classification_report(y_test, y_pred)
+        mlflow.log_text(report_str, "classification_report.txt")
 
         # Save and log confusion matrix
         logger.info("Generating confusion matrix plot...")

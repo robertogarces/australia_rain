@@ -62,4 +62,3 @@ artifacts/**/*.pkl
 
 mlruns/*/
 !mlruns/.gitkeep  # si quieres mantener la carpeta vacía en el repo
-/artifacts
